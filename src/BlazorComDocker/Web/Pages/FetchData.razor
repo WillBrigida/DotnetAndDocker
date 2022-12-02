@@ -1,0 +1,44 @@
+﻿@page "/fetchdata"
+@inject HttpClient Http
+
+<PageTitle>Planetas</PageTitle>
+
+<h1>Planetas</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (planets == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Planeta</th>
+                <th>Posição</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var planet in planets)
+            {
+                <tr>
+                    <td>@planet.Id</td>
+                    <td>@planet.Name</td>
+                    <td>@planet.Position</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Core.Modules.Models.Planet[]? planets;
+
+    protected override async Task OnInitializedAsync()
+    {
+        planets = await Http.GetFromJsonAsync<Core.Modules.Models.Planet[]>("api/v1/planet/all");
+    }
+}

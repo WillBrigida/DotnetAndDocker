@@ -1,0 +1,32 @@
+version: '3.8'  
+
+volumes: 
+   planetsdata:
+
+networks:
+   backend:
+
+services:
+   mysql:      
+      image: 'mysql:8'
+      volumes:
+        - planetsdata:/var/lib/mysql
+        - ./_SQL_Init_Script:/docker-entrypoint-initdb.d
+      networks:
+        - backend
+      environment:
+        - MYSQL_ROOT_PASSWORD=000000
+        - bind-address=0.0.0.0
+
+   planets:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      networks:
+        - backend
+      ports:
+        - 5000:80
+      environment:
+        - DBHOST=mysql
+      depends_on:
+        - mysql
